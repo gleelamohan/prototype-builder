@@ -1,0 +1,86 @@
+
+.main-container{
+  height: 615px; 
+  background-color: white; 
+  padding-top: 1px
+}
+
+.sub-cointainer{
+  margin: 10px;
+  height: 600px;
+  border: 1px solid black;
+  border-radius: 10px;
+}
+
+ .header{
+  width: 95%;
+  text-align: center;
+  padding: 30px;
+  border-bottom: 1px solid black;
+  margin: 0 auto;
+  font-size:18px;
+}
+
+.section-input{
+
+  padding: 20px;
+  border-bottom: 1px solid black;
+  width:95%;
+  margin:auto;
+}
+
+.section-input-upload{
+  padding: 40px;
+  border-bottom: 1px solid black;
+  width:95%;
+  margin:auto;
+}
+
+.section-type{
+  border-bottom: 1px solid black;
+  width:95%;
+  margin:auto;
+  padding:40px 20px 40px 20px;
+}
+
+.frame-section{
+  border-bottom: 1px solid black;
+  width:95%;
+  margin:auto;
+  padding:20px 20px 20px 20px;
+}
+
+.section-button{
+  text-align:center;padding:20px;
+}
+
+/* ----------------------------------------------- */
+.screenshot { 
+  position:absolute;
+  z-index:1;
+  
+}
+.draw {
+  position:absolute;
+  z-index:2;
+  pointer-events:none;
+}
+.draw .boxes {
+  fill:#BAD8F1;
+  stroke:white;
+  stroke-width:1;
+  fill-opacity:0.5;
+  stroke-opacity:0.9;
+
+}
+.draw .marquee {
+  fill:white;
+  stroke:blue;
+  stroke-width:1;
+  stroke-dasharray:5,5;
+  stroke-opacity:0.9;
+  fill-opacity:0.2;
+}
+.draw .marquee.hide {
+  display:none;
+}

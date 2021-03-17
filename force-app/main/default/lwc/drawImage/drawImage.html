@@ -1,0 +1,131 @@
+<template>
+  <div class="main-container" if:true={isStep1}>
+    <div class="sub-cointainer">
+      <div class="header">
+        Prototype Configuration
+      </div>
+      <div class="section-input" >
+       <div style="width:50%">
+        <lightning-input type="text" label="Prototype Name" onchange={nameChange}></lightning-input>
+      </div>
+      </div>
+      <div class="demo-only demo-only--sizing slds-grid slds-wrap section-type" >
+        <div class="slds-size_1-of-3">
+          <div
+            class=" slds-m-around_x-small"
+          >
+          <div style="height:100px;width:100px;">
+          <img src={desktop} style="height:80px;width:80px;" /> 
+        </div>
+          <lightning-input class="device-type" data-value="Desktop" type="checkbox" label="Desktop" name="input-desktop" onchange={handleChangeEvent}>></lightning-input>
+          </div>
+        </div>
+        <div class="slds-size_1-of-3">
+          <div
+            class=" slds-m-around_x-small"
+          >
+          <div style="height:100px;width:100px;">
+          <img src={mobile}  style="height:70px;width:50px;" />
+          </div>
+          <lightning-input class="device-type" data-value= "Mobile" type="checkbox" label="Mobile" name="input1" onchange={handleChangeEvent}>></lightning-input>
+          </div>
+        </div>
+        <div class="slds-size_1-of-3">
+          <div
+            class=" slds-m-around_x-small"
+          >
+          <div style="height:100px;width:100px;">
+          <img src={ipad}  style="height:80px;width:80px;" />
+          </div>
+          <lightning-input class="device-type" data-value="Ipad" type="checkbox" label="Ipad" name="input1" onchange={handleChangeEvent}>></lightning-input>
+          </div>
+        </div>
+      </div>
+      <div class="demo-only demo-only--sizing slds-grid slds-wrap frame-section" >
+        <div class="slds-size_1-of-3">
+          <lightning-input type="checkbox" class="frame-type" data-value="withFrame" label="Without Frame" onchange={handleFrameChangeEvent} name="input-without"></lightning-input>
+          </div>
+          <div class="slds-size_1-of-3">
+            <lightning-input type="checkbox" class="frame-type" data-value="withoutFrame"  label="With Frame" onchange={handleFrameChangeEvent} name="input-with"></lightning-input>
+
+        </div>
+        <div class="slds-size_1-of-3">
+        </div>
+
+      </div>
+      <div class="section-button">
+        <lightning-button variant="brand" label="Next" title="Primary action" onclick={handleStep1Click} class="slds-m-left_x-small"></lightning-button>
+      </div>
+    </div>
+  </div>
+  <div class="main-container" if:true={isStep2}>
+    <div class="sub-cointainer">
+      <div class="header">
+       Upload Images
+      </div>
+      <div class="section-input-upload" if:true={configId}>
+    <c-file-upload  record-id={configId}></c-file-upload>
+  </div>
+  <div class="section-button">
+    <lightning-button variant="brand" label="Next" title="Primary action" onclick={handleStep2Click} class="slds-m-left_x-small"></lightning-button>
+  </div>
+  </div>
+  </div>
+  <div class={isStep3} style="display: flex; height: 1080px; width: 1680px; margin: 0 auto">
+    <div class="sub-cointainer" style="width:100%">
+      <div class="header" style="text-align:left;" if:true={filesDetails}>
+        <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+          <div class="slds-size_2-of-3">
+            <div class="slds-m-around_x-small"> 
+               <lightning-combobox
+              name="progress"
+              label="Status"
+              value={value}
+              placeholder="Select Image"
+              options={options}
+              onchange={handleChange} ></lightning-combobox></div>
+          </div>
+          <div class="slds-size_1-of-3">
+            <div class="slds-m-around_x-small" style="float: right; padding-top: 20px;">
+              <lightning-button variant="brand" label="Save Image Hotspots" title="Primary action" onclick={handleSaveHotspots} class="slds-m-left_x-small"></lightning-button>
+
+            </div>
+          </div>
+        </div>
+        
+      
+      </div>
+      <div style="min-height: 800px;width:1655px;background-color: #C3C3C3;position: relative;overflow-x:auto;
+      overflow-y:auto;">
+      <c-image-hotspot image-url={trailheadLogoUrl} image-name={imageName} file-details={test} > </c-image-hotspot>
+      </div>
+     
+      <!--
+         <div style="height: 800px;width:1680px;background-color: blue;position: relative;overflow-x:auto;
+      overflow-y:auto;">
+      
+      </div>
+      <div style="width:1680px;height:1080px;overflow:auto;">
+    <img
+      width="1680"
+      height="1080"
+      src={trailheadLogoUrl}
+      class="screenshot"
+      draggable="false"
+    />
+    <svg
+      width="1680"
+      height="1080"
+      viewBox="0 0 1680 1080"
+      class="draw"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <rect class="marquee" x="450" y="420" width="150" height="150" />
+      <g class="boxes"></g>
+    </svg>
+  </div>-->
+    </div>
+  </div>
+
+  
+</template>

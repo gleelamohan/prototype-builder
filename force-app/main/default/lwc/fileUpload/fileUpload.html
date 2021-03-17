@@ -1,0 +1,13 @@
+<template>
+  <div style="display: flex; justify-content: center;"  if:true={recordId}>
+      <lightning-file-upload
+          label=""
+          name="fileUploader"
+          accept={acceptedFormats}
+          record-id={recordId}
+          onuploadfinished={handleUploadFinished}
+          multiple>
+  </lightning-file-upload>
+</div>
+ 
+</template>
