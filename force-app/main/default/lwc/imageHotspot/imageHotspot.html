@@ -15,6 +15,13 @@
   >
     <rect class="marquee" x="450" y="420" width="150" height="150" />
     <g class="boxes"></g>
+    <g class="added-boxes">
+      <template if:true={screenHotspots} for:each={initialHotspots} for:item="dat">
+
+        <rect key={dat.Id} class="marqueered" x={dat.X_cordinate__c} y={dat.Y_cordinate__c} width={dat.Width__c} height={dat.Height__c} />
+      </template>
+
+    </g>
   </svg>
 
   <div class="modalpopup">
@@ -55,8 +62,9 @@
           id="modal-content-id-1"
           style="height: 300px"
         >
-          <lightning-input type="text" label="Hotspot Name" onchange={hotspotChange}></lightning-input>
+          <lightning-input type="text"  label="Hotspot Name" onchange={hotspotChange}></lightning-input>
           <lightning-combobox
+          class="screentype"
             name="screenType"
             label="Select Screen Type"
             value={value1}

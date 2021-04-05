@@ -3,6 +3,9 @@ import TRAILHEAD_LOGO from "@salesforce/resourceUrl/image";
 import My_Resource from "@salesforce/resourceUrl/PrototypeAssets";
 import createProtoConfig from "@salesforce/apex/PrototypeController.createPrototypeConfig";
 import getFiles from "@salesforce/apex/PrototypeController.getRelatedFiles";
+import createScreenConfig from "@salesforce/apex/PrototypeController.createScreenConfig";
+import getHotspots from "@salesforce/apex/PrototypeController.getScreenHotspots";
+import updateHomeScreen from "@salesforce/apex/PrototypeController.updateHomeScreen";
 
 export default class DrawImage extends LightningElement {
   desktop = My_Resource + "/desktop.png";
@@ -15,14 +18,38 @@ export default class DrawImage extends LightningElement {
   protoType;
   orientation = "Landscape";
   withFrame;
+  isHome;
 
+  @track prevHomeScreenId;
   @track configId;
+  @track selectedCvId;
+  @track selcvId;
+  @track configScreenId;
   @track test;
   @track filesDetails;
+  @track screenHotspots;
 
   renderedCallback() {
    
 
+  }
+
+  homeScreenUpdation(){
+   
+  }
+
+  createAppLink(){
+    this.currentStep = 4;
+  }
+
+  fillHotspots(){
+    console.log(this.configScreenId);
+    getHotspots({
+      screenId:   this.configScreenId
+    }).then((response) => {  
+      console.log(response);
+      this.screenHotspots = response;
+    });
   }
 
   get options() {
@@ -60,6 +87,33 @@ export default class DrawImage extends LightningElement {
    
   }
 
+  createScreenConfiguration(){
+
+    createScreenConfig({
+      cId: this.configId,
+      cvId: this.selectedCvId,
+      fName: this.imageName,
+      startFlag:false
+    }).then((response) => {
+      this.configScreenId = response;
+
+      this.fillHotspots();
+
+      const checkbox = this.template.querySelector('.homepage');
+      if(checkbox && this.prevHomeScreenId === this.configScreenId){
+        checkbox.checked = true;
+        checkbox.disabled= true;
+      }
+      else if(checkbox){
+        checkbox.checked = false;
+        checkbox.disabled= false;
+      }
+
+      console.log(this.cvId);
+      console.log(response);
+    });
+  }
+
   handleStep3Click(event) {}
 
   createConfig() {
@@ -72,6 +126,21 @@ export default class DrawImage extends LightningElement {
       this.configId = response;
       console.log(response);
     });
+  }
+
+  handleHomeChange(event){
+    updateHomeScreen({
+      prevId: this.prevHomeScreenId,
+      currId: this.configScreenId
+    }).then((response) => {
+      const checkbox = this.template.querySelector('.homepage');
+      checkbox.disabled = true;
+      this.prevHomeScreenId = this.configScreenId;
+      console.log(this.prevHomeScreenId);
+      this.isHome = true;
+      console.log('HOME SCREEN UPDATED');
+    });
+
   }
 
   handleChangeEvent(event) {
@@ -105,10 +174,13 @@ export default class DrawImage extends LightningElement {
     const result = this.filesDetails.filter(item => item.docId === event.detail.value);
     
     //this.test = JSON.stringify(this.filesDetails);
-   
+   this.selectedCvId = result[0].contentVersionId;
+   this.selcvId = result[0].contentVersionId;
     this.trailheadLogoUrl = result[0].docURL;
     this.imageName = result[0].title;
     this.test = JSON.stringify(this.filesDetails);
+    this.createScreenConfiguration();
+    
   }
   get isStep1() {
     return this.currentStep === 1 ? true : false;
@@ -119,5 +191,9 @@ export default class DrawImage extends LightningElement {
 
   get isStep3() {
     return this.currentStep === 3 ? 'main-container' : 'main-container slds-hide';
+  }
+
+  get isStep4() {
+    return this.currentStep === 4 ? true : false;
   }
 }

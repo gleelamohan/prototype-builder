@@ -1,17 +1,23 @@
 import { LightningElement, track, api } from "lwc";
+import createScreenHotspot from "@salesforce/apex/PrototypeController.createScreenHotspot";
+
 
 export default class ImageHotspot extends LightningElement {
   //trailheadLogoUrl = TRAILHEAD_LOGO;
   @api imageUrl;
   @api imageName;
   @api fileDetails;
+  @api screenId;
+  @api screenHotspots;
+  @api versionId;
   @track marqueeRect = {
     x: 0,
     y: 0,
     width: 0,
     height: 0,
     name:'',
-    imageVId:''
+    imageVId:'',
+    url:''
   };
   @track $marquee;
   @track $screenshot;
@@ -21,25 +27,27 @@ export default class ImageHotspot extends LightningElement {
   $;
   @track hasRendered = true;
   @track isModalOpen = false;
-  hotspotHW;
-  hotspotXY;
+  hotspotX;
+  hotspotY;
+  hotspotHeight;
+  hotspotWidth;
+  hName;
 
-  value1 ='Screen';
+  value1 ='None';
 
   renderedCallback() {
-    //console.log(this.fileDetails);
+    
+    console.log(this.versionId);
     this.$ = this.template.querySelector.bind(this.template);
     this.template.querySelector(".boxes").innerHTML = "";
 
     
     this.$(".marquee").classList.add("hide");
 
-    //this.rectangles = [];
+     this.rectangles = [];
     if (this.hasRendered && this.imageName === "noLogo") {
       this.$(".modalpopup").classList.add("hide_modal");
-      console.log(this.imageurl);
-
-      console.log(this.$);
+      
 
       this.$marquee = this.$(".marquee");
       this.$screenshot = this.$(".screenshot");
@@ -54,6 +62,41 @@ export default class ImageHotspot extends LightningElement {
     }
   }
 
+  get initialHotspots(){
+    return this.screenHotspots;
+  }
+
+  createScreenHotspots(){
+
+    createScreenHotspot({
+      screenId: this.screenId,
+      name: this.marqueeRect.name,
+      type: this.value1,
+      targetId:this.marqueeRect.imageVId,
+      url:this.marqueeRect.url,
+      x:this.marqueeRect.x,
+      y:this.marqueeRect.y,
+      height:this.marqueeRect.height,
+      width:this.marqueeRect.width
+    }).then((response) => {  
+      
+      [...this.template
+        .querySelectorAll('lightning-input')]
+        .forEach((input) => { input.value = ''; });
+
+        const startSelect = this.template.querySelector('.screentype');
+        if (startSelect) {
+            startSelect.value = 'None';
+        }
+      //this.value1 = 'None';
+      //this.hName = '';
+      console.log('HOTSPOT SAVED');
+    });
+  }
+
+  
+
+
   handleTargetDropdownChange(event){
     this.marqueeRect.imageVId= event.detail.value;
     
@@ -63,6 +106,7 @@ export default class ImageHotspot extends LightningElement {
   }
   get options1() {
     return [
+      { label: 'None', value: 'None' },
         { label: 'Screen', value: 'Screen' },
         { label: 'URL', value: 'URL' }
     ];
@@ -76,14 +120,19 @@ hotspotChange(event){
   get options() {
 
     let fileOptions = [];
-    JSON.parse(this.fileDetails).forEach(function (item, index) {
+    JSON.parse(this.fileDetails).forEach( (item, index)=> {
+    if(this.versionId  && this.versionId != item.contentVersionId){
       fileOptions.push({
         label: item.title,
-        value:item.docId
+        //value:item.docId
+        value:item.contentVersionId
+        
       });
+    }
+
     });
 
-    console.log(fileOptions);
+   
     return fileOptions;
 }
 
@@ -133,7 +182,10 @@ get isURLtype(){
     this.$(".modalpopup").classList.add("hide_modal");
     
     if (this.marqueeRect.width && this.marqueeRect.height) {
-      this.hotspotHW
+      this.createScreenHotspots();
+      //console.log('***********');
+      //console.log(this.marqueeRect.width);
+      //console.log(this.marqueeRect.height);
       this.rectangles.push(Object.assign({}, this.marqueeRect));
       this.redraw();
       this.marqueeRect.width = 0;
@@ -174,7 +226,7 @@ get isURLtype(){
 
   redraw() {
     this.template.querySelector(".boxes").innerHTML = "";
-    console.log(this.rectangles);
+    //console.log(this.rectangles);
     this.rectangles.forEach((data) => {
       this.template
         .querySelector(".boxes")

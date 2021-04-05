@@ -1,5 +1,6 @@
 <template>
   <div style="display: flex; justify-content: center;"  if:true={recordId}>
+  
       <lightning-file-upload
           label=""
           name="fileUploader"
@@ -8,6 +9,20 @@
           onuploadfinished={handleUploadFinished}
           multiple>
   </lightning-file-upload>
+ 
+</div>
+<div style="display: flex;
+justify-content: center;
+align-items: center;
+margin-top: 50px;" >
+<template for:each={uploadedFiles} for:item="item">
+  <div key={item.name} style="width: 150px;height: 80px;text-align: center;" > 
+    <lightning-icon icon-name="doctype:image" alternative-text="Image file" title="Image"></lightning-icon>
+    <div>{item.name}</div>
+<div>        <lightning-button value= {item.documentId} variant="base" label="Delete" title="Delete the Image" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
+</div>
+  </div>
+</template>
 </div>
  
 </template>
