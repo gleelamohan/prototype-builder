@@ -10,6 +10,7 @@ export default class ImageHotspot extends LightningElement {
   @api screenId;
   @api screenHotspots;
   @api versionId;
+  @api donotReset;
   @track marqueeRect = {
     x: 0,
     y: 0,
@@ -39,12 +40,16 @@ export default class ImageHotspot extends LightningElement {
     
     console.log(this.versionId);
     this.$ = this.template.querySelector.bind(this.template);
+    if(! (this.donotReset))
+    {
     this.template.querySelector(".boxes").innerHTML = "";
-
+    }
     
     this.$(".marquee").classList.add("hide");
 
+    
      this.rectangles = [];
+    
     if (this.hasRendered && this.imageName === "noLogo") {
       this.$(".modalpopup").classList.add("hide_modal");
       
@@ -79,6 +84,13 @@ export default class ImageHotspot extends LightningElement {
       height:this.marqueeRect.height,
       width:this.marqueeRect.width
     }).then((response) => {  
+
+      const selectedEvent = new CustomEvent("hotspotspotadd", {
+        detail: {name:this.marqueeRect.name, id:response}
+      });
+  
+      // Dispatches the event.
+      this.dispatchEvent(selectedEvent);
       
       [...this.template
         .querySelectorAll('lightning-input')]

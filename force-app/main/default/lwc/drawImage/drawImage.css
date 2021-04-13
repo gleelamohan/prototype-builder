@@ -84,3 +84,7 @@
 .draw .marquee.hide {
   display:none;
 }
+
+.hide_modal{
+  display:none;
+}

@@ -11,15 +11,17 @@ export default class DrawImage extends LightningElement {
   desktop = My_Resource + "/desktop.png";
   mobile = My_Resource + "/mobile.png";
   ipad = My_Resource + "/ipad.png";
+  staticImage = TRAILHEAD_LOGO;
   trailheadLogoUrl = TRAILHEAD_LOGO;
   imageName = 'noLogo';
   currentStep = 1;
   protoName;
+  @track delArray=[];
   protoType;
   orientation = "Landscape";
   withFrame;
   isHome;
-
+  isLoaded=false;
   @track prevHomeScreenId;
   @track configId;
   @track selectedCvId;
@@ -28,18 +30,30 @@ export default class DrawImage extends LightningElement {
   @track test;
   @track filesDetails;
   @track screenHotspots;
+  @track delHotspots =[];
+  @track isModalOpen = false;
+  @track doNotReset = false;
+
 
   renderedCallback() {
-   
+   //this.isLoaded = false;
 
   }
 
   homeScreenUpdation(){
    
   }
-
+  
   createAppLink(){
     this.currentStep = 4;
+  }
+
+  openModal() {
+    this.template.querySelector(".modalpopup").classList.remove("hide_modal");
+  }
+
+  closeModal() {
+    this.template.querySelector(".modalpopup").classList.add("hide_modal");
   }
 
   fillHotspots(){
@@ -47,8 +61,17 @@ export default class DrawImage extends LightningElement {
     getHotspots({
       screenId:   this.configScreenId
     }).then((response) => {  
+   let res=   response.map((obj, i) => {
+       
+        obj.bin_x = obj.X_cordinate__c + obj.Width__c;
+        obj.bin_y = obj.Y_cordinate__c - obj.Height__c;
+
+        return obj;
+
+    });
       console.log(response);
-      this.screenHotspots = response;
+      this.screenHotspots = res;
+      this.delHotspots = res;
     });
   }
 
@@ -87,8 +110,10 @@ export default class DrawImage extends LightningElement {
    
   }
 
-  createScreenConfiguration(){
+  createScreenConfiguration(dId){
 
+    if(this.imageName != 'noLogo')
+    {
     createScreenConfig({
       cId: this.configId,
       cvId: this.selectedCvId,
@@ -96,7 +121,9 @@ export default class DrawImage extends LightningElement {
       startFlag:false
     }).then((response) => {
       this.configScreenId = response;
-
+      const result = this.filesDetails.filter(item => item.docId === dId);
+    
+      this.trailheadLogoUrl = result[0].docURL;
       this.fillHotspots();
 
       const checkbox = this.template.querySelector('.homepage');
@@ -111,7 +138,9 @@ export default class DrawImage extends LightningElement {
 
       console.log(this.cvId);
       console.log(response);
+      this.isLoaded = false;
     });
+  }
   }
 
   handleStep3Click(event) {}
@@ -143,6 +172,21 @@ export default class DrawImage extends LightningElement {
 
   }
 
+  handleChangeDeleteCheck(event){
+    this.delArray.push(event.target.dataset.value);
+    console.log(this.delArray);
+  }
+  
+  addHotspotDelList(event){
+    this.doNotReset = true;
+   this.delHotspots.push({Name:event.detail.name, Id: event.detail.id});
+    console.log(this.delHotspots);
+  }
+
+  bindDeleteInnerHTML(){
+
+  }
+
   handleChangeEvent(event) {
     Array.from(this.template.querySelectorAll(".device-type")).forEach(
       (element) => {
@@ -171,17 +215,26 @@ export default class DrawImage extends LightningElement {
 
 
   handleChange(event){
+    this.doNotReset = false;
+    this.trailheadLogoUrl = this.staticImage;
     const result = this.filesDetails.filter(item => item.docId === event.detail.value);
     
-    //this.test = JSON.stringify(this.filesDetails);
-   this.selectedCvId = result[0].contentVersionId;
-   this.selcvId = result[0].contentVersionId;
-    this.trailheadLogoUrl = result[0].docURL;
+    this.selectedCvId = result[0].contentVersionId;
+    this.selcvId = result[0].contentVersionId;
+    
     this.imageName = result[0].title;
     this.test = JSON.stringify(this.filesDetails);
-    this.createScreenConfiguration();
+    this.isLoaded = true;
+    this.createScreenConfiguration(event.detail.value);
+  
+    //setTimeout(function(that){ that.isLoaded = false }, 5000, this);
     
   }
+
+  get isDelHotspots(){
+    return this.delHotspots.length > 0?true:false;
+  }
+
   get isStep1() {
     return this.currentStep === 1 ? true : false;
   }

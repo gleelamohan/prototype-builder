@@ -44,7 +44,7 @@ public with sharing class PrototypeController {
     }
 
  @AuraEnabled
-  public static void createScreenHotspot(string screenId, string name, string type, string targetId, string url, integer x, integer y, integer height, integer width) {
+  public static String createScreenHotspot(string screenId, string name, string type, string targetId, string url, integer x, integer y, integer height, integer width) {
 
     Hotspots__c hspost = new Hotspots__c();
     hspost.Prototype_Screen_Configuration__c = screenId;
@@ -63,6 +63,13 @@ public with sharing class PrototypeController {
 
     insert hspost;
 
+    return hspost.Id;
+
+  }
+
+  @AuraEnabled
+  public static void deleteHotspots(List<string> hIds){
+        delete [select Id from Hotspots__c where Id =: hIds];
   }
 
   @AuraEnabled
@@ -105,7 +112,7 @@ public with sharing class PrototypeController {
 
 @AuraEnabled
 public static List<Hotspots__c> getScreenHotspots(string screenId){
-    List<Hotspots__c> hs=[select Name,X_cordinate__c,Y_cordinate__c,Height__c,Width__c from Hotspots__c where Prototype_Screen_Configuration__c=:screenId];
+    List<Hotspots__c> hs=[select Id, Name,X_cordinate__c,Y_cordinate__c,Height__c,Width__c from Hotspots__c where Prototype_Screen_Configuration__c=:screenId];
     return hs;
 }
 
@@ -125,7 +132,9 @@ public static List<FilesWrapper> getRelatedFiles(Id recordId){
 
     for (ContentDocument cd : cdList) {
         ContentVersion cv = [SELECT Id FROM ContentVersion WHERE ContentDocumentId = :cd.Id AND IsLatest = true];
-        String cvDownloadURL = URL.getSalesforceBaseUrl().toExternalForm() + '/sfc/servlet.shepherd/version/download/' + cv.Id;
+        //String cvDownloadURL = URL.getSalesforceBaseUrl().toExternalForm() + '/sfc/servlet.shepherd/version/download/' + cv.Id;
+        String cvDownloadURL = '/sfc/servlet.shepherd/version/download/' + cv.Id;
+
         FilesWrapper fw = new FilesWrapper();
         fw.docId = cd.Id;
         fw.title = cd.Title;
