@@ -1,5 +1,6 @@
 import { LightningElement, track, api } from "lwc";
 import createScreenHotspot from "@salesforce/apex/PrototypeController.createScreenHotspot";
+import getHotspots from "@salesforce/apex/PrototypeController.getScreenHotspots";
 
 
 export default class ImageHotspot extends LightningElement {
@@ -39,7 +40,10 @@ export default class ImageHotspot extends LightningElement {
   renderedCallback() {
     
     console.log(this.versionId);
+    
     this.$ = this.template.querySelector.bind(this.template);
+
+
     if(! (this.donotReset))
     {
     this.template.querySelector(".boxes").innerHTML = "";
@@ -48,21 +52,17 @@ export default class ImageHotspot extends LightningElement {
     this.$(".marquee").classList.add("hide");
 
     
-     this.rectangles = [];
+    // this.rectangles = [];
     
     if (this.hasRendered && this.imageName === "noLogo") {
       this.$(".modalpopup").classList.add("hide_modal");
-      
-
       this.$marquee = this.$(".marquee");
       this.$screenshot = this.$(".screenshot");
       window.removeEventListener("pointerup", this._stopDrag);
       this.$screenshot.removeEventListener("pointermove", this._moveDrag);
       this.$screenshot.removeEventListener("pointerdown", this._startDrag);
-
       this._startDrag = this.startDrag.bind(this);
       this.$screenshot.addEventListener("pointerdown", this._startDrag);
-
       this.hasRendered = false;
     }
   }
@@ -100,13 +100,34 @@ export default class ImageHotspot extends LightningElement {
         if (startSelect) {
             startSelect.value = 'None';
         }
-      //this.value1 = 'None';
-      //this.hName = '';
+    
+      this.fillHotspots();
+      this.value1 ='None';
       console.log('HOTSPOT SAVED');
     });
   }
 
-  
+  fillHotspots(){
+    
+    getHotspots({
+      screenId:   this.screenId
+    }).then((response) => {  
+   let res=   response.map((obj, i) => {
+       
+        obj.bin_x = obj.X_cordinate__c + obj.Width__c;
+        obj.bin_y = obj.Y_cordinate__c - obj.Height__c;
+
+        return obj;
+
+    });
+      console.log(response);
+      
+      this.screenHotspots = res;
+      this.template.querySelector(".boxes").innerHTML = "";
+      this.rectangles=[];
+      
+    });
+  }
 
 
   handleTargetDropdownChange(event){

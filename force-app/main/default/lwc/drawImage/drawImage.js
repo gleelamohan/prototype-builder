@@ -5,6 +5,7 @@ import createProtoConfig from "@salesforce/apex/PrototypeController.createProtot
 import getFiles from "@salesforce/apex/PrototypeController.getRelatedFiles";
 import createScreenConfig from "@salesforce/apex/PrototypeController.createScreenConfig";
 import getHotspots from "@salesforce/apex/PrototypeController.getScreenHotspots";
+import deleteHotspots from "@salesforce/apex/PrototypeController.deleteHotspots";
 import updateHomeScreen from "@salesforce/apex/PrototypeController.updateHomeScreen";
 
 export default class DrawImage extends LightningElement {
@@ -56,6 +57,24 @@ export default class DrawImage extends LightningElement {
     this.template.querySelector(".modalpopup").classList.add("hide_modal");
   }
 
+  fnDelHotspots(){
+
+    let delarr = [];
+
+    this.delHotspots.map((item)=>{
+      delarr.push(item.Id);
+    });
+
+    deleteHotspots({
+      hIds:  delarr
+    }).then((response) => {  
+  
+
+      this.fillHotspots();
+      this.closeModal();
+    });
+  }
+
   fillHotspots(){
     console.log(this.configScreenId);
     getHotspots({
@@ -75,9 +94,11 @@ export default class DrawImage extends LightningElement {
     });
   }
 
+
   get options() {
 
     let fileOptions = [];
+
     this.filesDetails.forEach(function (item, index) {
       fileOptions.push({
         label: item.title,
