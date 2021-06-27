@@ -6,7 +6,7 @@
 .draw {
   position:absolute;
   z-index:2;
-  pointer-events:none;
+  /*pointer-events:none;*/
 }
 .draw .boxes {
   fill:#BAD8F1;
@@ -35,16 +35,28 @@
 }
 
 .draw .marqueered {
-  fill:lightcoral;
-  stroke:red;
+  fill:lightblue;
+  stroke:rgb(1, 118, 211);
   stroke-width:1;
   stroke-opacity:0.9;
   fill-opacity:0.2;
 }
-.draw .marquee.hide {
+ .marquee.hide {
   display:none;
 }
 
 .hide_modal{
   display:none;
+}
+
+.hideIt {
+  display:none;
+}
+
+.showIt {
+  display:block;
+}
+
+.parentDiv {
+  min-height: 100%;/* width: 1655px; background-color: rgb(195, 195, 195);*/ position: relative; 
 }

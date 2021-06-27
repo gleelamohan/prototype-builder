@@ -8,12 +8,22 @@
    
   <div class="main-container" if:true={isStep1}>
     <div class="sub-cointainer">
+      <div style="
+      float: right;
+      padding: 15px;
+  ">
+<a href="/lightning/o/PrototypeConfiguration__c/list?filterName=Recent" target="_blank">
+  <lightning-button variant="brand-outline" label="Edit Configurations" title="Primary action with lighter look" onclick={handleClick} class="slds-m-left_x-small"></lightning-button>
+
+</a>
+</div>
+      
       <div class="header">
         Prototype Configuration
       </div>
       <div class="section-input" >
        <div style="width:50%">
-        <lightning-input type="text" label="Prototype Name" onchange={nameChange}></lightning-input>
+        <lightning-input required="true" type="text" label="Prototype Name" onchange={nameChange}></lightning-input>
       </div>
       </div>
       <div class="demo-only demo-only--sizing slds-grid slds-wrap section-type" >
@@ -24,7 +34,7 @@
           <div style="height:100px;width:100px;">
           <img src={desktop} style="height:80px;width:80px;" /> 
         </div>
-          <lightning-input class="device-type" data-value="Desktop" type="checkbox" label="Desktop" name="input-desktop" onchange={handleChangeEvent}>></lightning-input>
+          <lightning-input class="device-type" checked="true" data-value="Desktop" type="checkbox" label="Desktop" name="input-desktop" onchange={handleChangeEvent}>></lightning-input>
           </div>
         </div>
         <div class="slds-size_1-of-3">
@@ -34,26 +44,26 @@
           <div style="height:100px;width:100px;">
           <img src={mobile}  style="height:70px;width:50px;" />
           </div>
-          <lightning-input class="device-type" data-value= "Mobile" type="checkbox" label="Mobile" name="input1" onchange={handleChangeEvent}>></lightning-input>
+          <lightning-input class="device-type" data-value= "Mobile" type="checkbox" label="Mobile (Coming Soon)" disabled="true" name="input1" onchange={handleChangeEvent}>></lightning-input>
           </div>
         </div>
         <div class="slds-size_1-of-3">
           <div
-            class=" slds-m-around_x-small"
+            class="slds-m-around_x-small"
           >
           <div style="height:100px;width:100px;">
           <img src={ipad}  style="height:80px;width:80px;" />
           </div>
-          <lightning-input class="device-type" data-value="Ipad" type="checkbox" label="Ipad" name="input1" onchange={handleChangeEvent}>></lightning-input>
+          <lightning-input class="device-type" data-value="Ipad" type="checkbox" label="Ipad (Coming Soon)" disabled="true" name="input1" onchange={handleChangeEvent}>></lightning-input>
           </div>
         </div>
       </div>
       <div class="demo-only demo-only--sizing slds-grid slds-wrap frame-section" >
         <div class="slds-size_1-of-3">
-          <lightning-input type="checkbox" class="frame-type" data-value="withFrame" label="Without Frame" onchange={handleFrameChangeEvent} name="input-without"></lightning-input>
+          <lightning-input type="checkbox" checked="true" class="frame-type" data-value="withoutFrame" label="Without Frame" onchange={handleFrameChangeEvent} name="input-without"></lightning-input>
           </div>
           <div class="slds-size_1-of-3">
-            <lightning-input type="checkbox" class="frame-type" data-value="withoutFrame"  label="With Frame" onchange={handleFrameChangeEvent} name="input-with"></lightning-input>
+            <lightning-input type="checkbox" class="frame-type" data-value="withFrame"  label="With Frame(Coming Soon)" disabled="true" onchange={handleFrameChangeEvent} name="input-with"></lightning-input>
 
         </div>
         <div class="slds-size_1-of-3">
@@ -61,7 +71,7 @@
 
       </div>
       <div class="section-button">
-        <lightning-button variant="brand" label="Next" title="Primary action" onclick={handleStep1Click} class="slds-m-left_x-small"></lightning-button>
+        <lightning-button variant="brand"  disabled={checkStep1} label="Next" title="Next" onclick={handleStep1Click} class="slds-m-left_x-small"></lightning-button>
       </div>
     </div>
   </div>
@@ -70,49 +80,66 @@
       <div class="header">
        Upload Images
       </div>
-      <div class="section-input-upload" if:true={configId}>
-    <c-file-upload  record-id={configId}></c-file-upload>
+      <div class="section-input-upload" if:true={configId} style="height:300px;">
+    <c-file-upload  record-id={configId} onfileuploaded ={filesUploaded}></c-file-upload>
    
   </div>
+  <div style="    margin-left: 30px;
+  margin-top: 20px;
+  font-weight: 600;">Supported Images: 1920 x 1080 pixels. </div>
   <div class="section-button">
-    <lightning-button variant="brand" label="Next" title="Primary action" onclick={handleStep2Click} class="slds-m-left_x-small"></lightning-button>
+    
+    <lightning-button variant="brand" label="Next" disabled={show2} title="Step 3" onclick={handleStep2Click} class="slds-m-left_x-small"></lightning-button>
   </div>
   </div>
   </div>
-  <div class={isStep3} style="display: flex; height: 1080px; width: 1680px; margin: 0 auto">
-    <div class="sub-cointainer" style="width:100%">
+  <div class={isStep3} style="display: flex; min-height:800px; width: 100%; margin: 0 auto">
+    <div class="sub-cointainer" style="width:1580px;overflow-x:hidden;overflow-y:hidden;">
+     
       <div class="header" style="text-align:left;" if:true={filesDetails}>
-        <div class="demo-only demo-only--sizing slds-grid slds-wrap">
+        <div style="text-align:center">
+          Configure Image Hotspots
+         </div>
+        <div class="demo-only demo-only--sizing slds-grid slds-wrap" style="font-size:0.8125rem">
           <div class="slds-size_2-of-3">
             <div class="slds-m-around_x-small"> 
-               <lightning-combobox
+              <lightning-combobox
               name="progress"
-              label="Status"
+              label="Select Image"
               value={value}
               placeholder="Select Image"
               options={options}
               onchange={handleChange} ></lightning-combobox></div>
           </div>
           <div class="slds-size_1-of-3">
-            <div class="slds-m-around_x-small" style="float: left; padding-top: 30px;" if:true={configScreenId}>
-              <lightning-input class="homepage" type="checkbox" label="Home Page" name="homepage" onchange={handleHomeChange}></lightning-input>
-            </div> 
-            <div class="slds-m-around_x-small" if:true={isDelHotspots}  style="float: right; padding-top: 20px;" >
-              <lightning-button variant="brand" label="Delete Hotspots" title="Delete Screen Hotspots" onclick={openModal} class="slds-m-left_x-small"></lightning-button>
-
-            </div>
-            <div class="slds-m-around_x-small" style="float: right; padding-top: 20px;" if:true={isHome}>
-              <lightning-button variant="brand" label="Create App Link" title="Create App Link" onclick={createAppLink} class="slds-m-left_x-small"></lightning-button>
-
+            <div style="display:flex;justify-content:space-between;margin-top:8px;flex-wrap:wrap;">
+              <div>
+                <div class="" style="float: left; padding-top: 30px;" if:true={configScreenId}>
+                  <lightning-input class="homepage" type="checkbox" checked={isHome} label="Home Page" name="homepage" onchange={handleHomeChange}></lightning-input>
+                </div> 
+              </div>
+              <div style="display:flex;justify-content:center;align-items:center;padding-top:30px;">
+                <div class=""  if:true={isAppLink}>
+                  <lightning-button variant="brand" label="Create App Link" title="Create App Link" onclick={createAppLink} class="slds-m-left_x-small"></lightning-button>
+                </div>
+                <div class="" if:true={isDelHotspots}   >
+                  <lightning-button variant="brand" label="Delete Hotspots" title="Delete Screen Hotspots" onclick={openModal} class="slds-m-left_x-small"></lightning-button>
+                </div>
+                
+              </div>
             </div>
           </div>
         </div>
-        
-      
       </div>
-      <div style="min-height: 800px;width:1655px;background-color: #C3C3C3;position: relative;overflow-x:auto;
+
+      <div if:true={isDesktop} style="min-height: 600px;background-color: white;position: relative;overflow-x:auto;
       overflow-y:auto;">
-      <c-image-hotspot donot-reset={doNotReset} version-id={selcvId} screen-hotspots={screenHotspots} image-url={trailheadLogoUrl} image-name={imageName} file-details={test} screen-id={configScreenId} onhotspotspotadd={addHotspotDelList}> </c-image-hotspot>
+      <c-image-hotspot  proto-type={protoType} all-files={filesDetails} version-id={selcvId} screen-hotspots={screenHotspots} image-url={trailheadLogoUrl} image-name={imageName} file-details={parsedFiledetails} screen-id={configScreenId} onhotspotspotadd={addHotspotDelList}> </c-image-hotspot>
+      </div>
+
+      <div if:true={isMobile} style="min-height: 800px;width:850px;background-color: #C3C3C3;position: relative;overflow-x:auto;
+      overflow-y:auto;">
+      <c-mobile-hotspot  proto-type={protoType} all-files={filesDetails} version-id={selcvId} screen-hotspots={screenHotspots} image-url={trailheadLogoUrl} image-name={imageName} file-details={parsedFiledetails} screen-id={configScreenId} onhotspotspotadd={addHotspotDelList}> </c-mobile-hotspot>
       </div>
      
       <!--
@@ -150,12 +177,21 @@
     <div class="header">
      App URL
     </div>
-    <div style="padding-top: 250px;"><a>    https://orgchartsdo31796.lightning.force.com/c/ProtoTypeBuilderConfig.app?templateId={configId}
-    </a></div>
-    
+ 
+    <div  class="applink" style="width:50%;margin:0 auto;margin-top:150px">
+      <lightning-textarea name="input1" label="" value=  {finalAppUrl} disabled ></lightning-textarea>
+     </div>
+     <div style="margin-top:20px;">
+     <a href={finalAppUrl} target="_blank">    <!--https://orgchartsdo31796.lightning.force.com/c/ProtoTypeBuilderConfig.app?templateId={configId}-->
+      <lightning-button  variant="brand-outline"  label="Launch Application" title="Navigate to Application Home" icon-name="utility:home" class="slds-m-left_x-small"></lightning-button>
+    </a>
+
+    <lightning-button  variant="brand-outline"  label="Copy URL to Clipboard" title="Copy URL to Clipboard" icon-name="utility:copy_to_clipboard" class="slds-m-left_x-small" onclick={handleCopyToClipboard}></lightning-button>
+    <lightning-button  variant="brand-outline"   label="Share URL" title="Share URL" icon-name="utility:internal_share" class="slds-m-left_x-small"></lightning-button>
+
+  </div>
     </div>
   </div>
-  
 
   <div class="modalpopup hide_modal">
     <section
@@ -239,7 +275,6 @@
             </tbody>
             </table>
         </div>
-       
         <footer class="slds-modal__footer">
           <button
           class="slds-button slds-button_neutral"

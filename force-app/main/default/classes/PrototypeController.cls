@@ -110,8 +110,14 @@ public with sharing class PrototypeController {
 
 }
 
-@AuraEnabled
-public static List<Hotspots__c> getScreenHotspots(string screenId){
+    @AuraEnabled
+    public static Boolean checkHomeScreen(string screenId){
+        List<Prototype_Screen_Configuration__c> psc = [select  startFlag__c from Prototype_Screen_Configuration__c where Id=:screenId];
+        return psc[0].startFlag__c == true?true:false;
+    }
+
+    @AuraEnabled
+    public static List<Hotspots__c> getScreenHotspots(string screenId){
     List<Hotspots__c> hs=[select Id, Name,X_cordinate__c,Y_cordinate__c,Height__c,Width__c from Hotspots__c where Prototype_Screen_Configuration__c=:screenId];
     return hs;
 }

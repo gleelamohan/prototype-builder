@@ -1,4 +1,4 @@
-import { LightningElement, track } from "lwc";
+import { LightningElement, track, api } from "lwc";
 import TRAILHEAD_LOGO from "@salesforce/resourceUrl/image";
 import My_Resource from "@salesforce/resourceUrl/PrototypeAssets";
 import createProtoConfig from "@salesforce/apex/PrototypeController.createPrototypeConfig";
@@ -7,15 +7,18 @@ import createScreenConfig from "@salesforce/apex/PrototypeController.createScree
 import getHotspots from "@salesforce/apex/PrototypeController.getScreenHotspots";
 import deleteHotspots from "@salesforce/apex/PrototypeController.deleteHotspots";
 import updateHomeScreen from "@salesforce/apex/PrototypeController.updateHomeScreen";
+import checkHomeScreen from "@salesforce/apex/PrototypeController.checkHomeScreen";
 
 export default class DrawImage extends LightningElement {
+  @api recordId;
   desktop = My_Resource + "/desktop.png";
   mobile = My_Resource + "/mobile.png";
   ipad = My_Resource + "/ipad.png";
   staticImage = TRAILHEAD_LOGO;
   trailheadLogoUrl = TRAILHEAD_LOGO;
   imageName = 'noLogo';
-  currentStep = 1;
+  show2 = true;
+  currentStep;
   protoName;
   @track delArray=[];
   protoType;
@@ -23,30 +26,60 @@ export default class DrawImage extends LightningElement {
   withFrame;
   isHome;
   isLoaded=false;
+  createMode;
   @track prevHomeScreenId;
   @track configId;
   @track selectedCvId;
   @track selcvId;
   @track configScreenId;
-  @track test;
+  @track parsedFiledetails;
   @track filesDetails;
   @track screenHotspots;
   @track delHotspots =[];
   @track isModalOpen = false;
   @track doNotReset = false;
+  finalAppUrl = '';
+  isPrototypeNameFilled = true;
 
 
-  renderedCallback() {
-   //this.isLoaded = false;
-
+  connectedCallback() {
+   if(this.recordId){
+    this.protoType ='Desktop'
+     this.configId = this.recordId;
+    getFiles({
+      recordId: this.recordId
+    }).then((response) => {
+      console.log(response);
+      this.filesDetails = response;
+      this.currentStep = 3;
+      this.createMode = false;
+    });
+   }
+   else{
+    this.currentStep = 1;
+    this.protoType = 'Desktop';
+    this.orientation = 'Landscape';
+    this.withFrame = 'withoutFrame';
+    this.createMode = true;
+   }
   }
 
-  homeScreenUpdation(){
-   
+  checkIsHome(){
+    checkHomeScreen({
+      screenId:this.configScreenId
+    }).then((response) => {  
+      if(response){
+        console.log(response);
+        this.isHome = true;
+        const checkbox = this.template.querySelector('.homepage');
+        checkbox.disabled = true;
+      }
+    });
   }
   
   createAppLink(){
     this.currentStep = 4;
+    this.finalAppUrl = 'https://'+window.location.hostname+'/c/ConfiguredHotspotsApp.app?pscId=' + this.configId;
   }
 
   openModal() {
@@ -59,11 +92,11 @@ export default class DrawImage extends LightningElement {
 
   fnDelHotspots(){
 
-    let delarr = [];
+    let delarr = this.delArray;
 
-    this.delHotspots.map((item)=>{
+   /* this.delHotspots.map((item)=>{
       delarr.push(item.Id);
-    });
+    });*/
 
     deleteHotspots({
       hIds:  delarr
@@ -96,22 +129,24 @@ export default class DrawImage extends LightningElement {
 
 
   get options() {
-
     let fileOptions = [];
-
     this.filesDetails.forEach(function (item, index) {
       fileOptions.push({
         label: item.title,
         value:item.docId
       });
     });
-
     return fileOptions;
 }
 
   nameChange(event) {
     this.protoName = event.target.value;
-
+    if( this.protoName ) {
+      this.isPrototypeNameFilled = false;
+    }
+    else {
+      this.isPrototypeNameFilled = true;
+    }
   }
 
   handleStep1Click(event) {
@@ -146,7 +181,7 @@ export default class DrawImage extends LightningElement {
     
       this.trailheadLogoUrl = result[0].docURL;
       this.fillHotspots();
-
+      this.checkIsHome();
       const checkbox = this.template.querySelector('.homepage');
       if(checkbox && this.prevHomeScreenId === this.configScreenId){
         checkbox.checked = true;
@@ -204,6 +239,12 @@ export default class DrawImage extends LightningElement {
     console.log(this.delHotspots);
   }
 
+  filesUploaded(event){
+
+    this.show2 = false;
+
+  }
+
   bindDeleteInnerHTML(){
 
   }
@@ -244,7 +285,7 @@ export default class DrawImage extends LightningElement {
     this.selcvId = result[0].contentVersionId;
     
     this.imageName = result[0].title;
-    this.test = JSON.stringify(this.filesDetails);
+    this.parsedFiledetails = JSON.stringify(this.filesDetails);
     this.isLoaded = true;
     this.createScreenConfiguration(event.detail.value);
   
@@ -252,6 +293,31 @@ export default class DrawImage extends LightningElement {
     
   }
 
+  handleCopyToClipboard(){
+    const container = this.template.querySelector(".applink");
+    const range = document.createRange();
+    range.selectNode(container);
+    const selection = window.getSelection();
+    selection.removeAllRanges();
+    selection.addRange(range);      
+    const successful = document.execCommand('copy');
+  }
+
+  get checkStep1(){
+
+   return (typeof(this.protoName) === 'undefined' || this.protoName === '') === true?true:false;
+
+  }
+
+  get isDesktop(){
+
+    return this.protoType ==='Desktop'?true:false;
+  }
+
+  get isMobile(){
+    return this.protoType ==='Mobile'?true:false;
+
+  }
   get isDelHotspots(){
     return this.delHotspots.length > 0?true:false;
   }
@@ -269,5 +335,10 @@ export default class DrawImage extends LightningElement {
 
   get isStep4() {
     return this.currentStep === 4 ? true : false;
+  }
+
+  get isAppLink(){
+    console.log(this.isHome && this.createMode);
+    return (this.isHome && this.createMode) === true? true:false;
   }
 }

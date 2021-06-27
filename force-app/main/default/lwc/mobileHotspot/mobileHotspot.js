@@ -2,8 +2,8 @@ import { LightningElement, track, api } from "lwc";
 import createScreenHotspot from "@salesforce/apex/PrototypeController.createScreenHotspot";
 import getHotspots from "@salesforce/apex/PrototypeController.getScreenHotspots";
 
-
-export default class ImageHotspot extends LightningElement {
+export default class MobileHotspot extends LightningElement {
+  //trailheadLogoUrl = TRAILHEAD_LOGO;
   @api imageUrl;
   @api imageName;
   @api fileDetails;
@@ -35,17 +35,16 @@ export default class ImageHotspot extends LightningElement {
   hotspotHeight;
   hotspotWidth;
   hName;
-  urlVal;
 
   value1 ='None';
 
   renderedCallback() {
-
+    
     this.$ = this.template.querySelector.bind(this.template);
     console.log(this.versionId);
     console.log('***** FILE DETAILS ****');
     console.log(this.fileDetails);
-
+    
     this.$(".marquee").classList.add("hide");
     if (this.hasRendered){
     this.$(".modalpopup").classList.add("hide_modal");
@@ -60,13 +59,9 @@ export default class ImageHotspot extends LightningElement {
       
       if(this.$('[id^="'+this.versionId+'-"]'))
       {
-        this.$('[id^="'+this.versionId+'-"]').style.display = 'block';
-        let svgHeight = this.$('[id^="'+this.versionId+'-"]').height;
-        console.log(this.$('[id^="'+this.versionId+'-"]').height);
-        this.$('.draw').setAttribute('viewBox', '0 0 1920 '+ svgHeight);
-        this.$('.draw').setAttribute('height',  svgHeight);
-        this.$('.draw').setAttribute('width',  '1920');
+     this.$('[id^="'+this.versionId+'-"]').style.display = 'block';
       }
+
     }
     
     // this.rectangles = [];
@@ -112,9 +107,7 @@ export default class ImageHotspot extends LightningElement {
       [...this.template
         .querySelectorAll('lightning-input')]
         .forEach((input) => { input.value = ''; });
-        this.marqueeRect.name = '';
-        this.marqueeRect.imageVId = '';
-        this.marqueeRect.url = '';
+
         const startSelect = this.template.querySelector('.screentype');
         if (startSelect) {
             startSelect.value = 'None';
@@ -188,28 +181,6 @@ hotspotChange(event){
     return fileOptions;
 }
 
-get checkStep2(){
-  let disabled = false;
- if(typeof(this.marqueeRect.name) === 'undefined' || this.marqueeRect.name === '')
- {
-  disabled = true;
- }
- if((typeof(this.value1) === 'undefined' || this.value1 === '') || this.value1 === 'None')
- {
-  disabled = true;
- }
-
- if( (typeof(this.marqueeRect.imageVId) === 'undefined' || this.marqueeRect.imageVId === '' ) && (typeof(this.marqueeRect.url) === 'undefined' || this.marqueeRect.url === '' ))
-{
-  disabled = true;
-}
-   return disabled;
-}
-
-get divWidth(){
-  return this.imageName === "noLogo"? "width:1500px;":"width:1920px";
-}
-
 get isScreenType(){
   
   return this.value1 === 'Screen'?true:false;
@@ -265,11 +236,6 @@ get isURLtype(){
       this.marqueeRect.width = 0;
       this.marqueeRect.height = 0;
     }
-  }
-
-  handleUrlChange(event) {
-    //this.urlVal = event.detail.value;
-    this.marqueeRect.url = event.detail.value;
   }
 
   closeModal() {

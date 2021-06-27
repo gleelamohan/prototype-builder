@@ -26,10 +26,6 @@ deleteDocument({
         return i.documentId === delDoc;
     }), 1);
   });
-
-       
-
-
     }
     handleUploadFinished(event) {
         // Get the list of uploaded files
@@ -49,6 +45,15 @@ deleteDocument({
 
             this.uploadedFiles.push(arr);
         }
+
+        if(this.uploadedFiles.length > 0){
+
+        const selectedEvent = new CustomEvent("fileuploaded", {
+            detail: this.uploadedFiles.length
+          });
+          this.dispatchEvent(selectedEvent);
+        }
+        
         this.dispatchEvent(
             new ShowToastEvent({
                 title: 'Success',
