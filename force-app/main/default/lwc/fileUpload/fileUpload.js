@@ -11,7 +11,7 @@ export default class FileUpload extends LightningElement {
     console.log(this.recordId);
   }
     get acceptedFormats() {
-        return ['.pdf', '.png','.jpg','.jpeg'];
+        return ['.png','.jpg','.jpeg'];
     }
 
     handleClick(event) {
@@ -53,7 +53,7 @@ deleteDocument({
           });
           this.dispatchEvent(selectedEvent);
         }
-        
+
         this.dispatchEvent(
             new ShowToastEvent({
                 title: 'Success',

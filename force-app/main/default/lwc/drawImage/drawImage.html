@@ -42,7 +42,7 @@
             class=" slds-m-around_x-small"
           >
           <div style="height:100px;width:100px;">
-          <img src={mobile}  style="height:70px;width:50px;" />
+          <img src={mobile}  style="height:70px;width:50px;opacity:20%;" />
           </div>
           <lightning-input class="device-type" data-value= "Mobile" type="checkbox" label="Mobile (Coming Soon)" disabled="true" name="input1" onchange={handleChangeEvent}>></lightning-input>
           </div>
@@ -52,7 +52,7 @@
             class="slds-m-around_x-small"
           >
           <div style="height:100px;width:100px;">
-          <img src={ipad}  style="height:80px;width:80px;" />
+          <img src={ipad}  style="height:80px;width:80px;opacity:20%;" />
           </div>
           <lightning-input class="device-type" data-value="Ipad" type="checkbox" label="Ipad (Coming Soon)" disabled="true" name="input1" onchange={handleChangeEvent}>></lightning-input>
           </div>
@@ -84,9 +84,7 @@
     <c-file-upload  record-id={configId} onfileuploaded ={filesUploaded}></c-file-upload>
    
   </div>
-  <div style="    margin-left: 30px;
-  margin-top: 20px;
-  font-weight: 600;">Supported Images: 1920 x 1080 pixels. </div>
+  <div style="margin-left: 30px;margin-top: 20px;">Supported Images: 1920 x 1080 pixels. </div>
   <div class="section-button">
     
     <lightning-button variant="brand" label="Next" disabled={show2} title="Step 3" onclick={handleStep2Click} class="slds-m-left_x-small"></lightning-button>
@@ -94,9 +92,9 @@
   </div>
   </div>
   <div class={isStep3} style="display: flex; min-height:800px; width: 100%; margin: 0 auto">
-    <div class="sub-cointainer" style="width:1580px;overflow-x:hidden;overflow-y:hidden;">
+    <div class="sub-cointainer" style="width:1680px;overflow-x:hidden;overflow-y:hidden;">
      
-      <div class="header" style="text-align:left;" if:true={filesDetails}>
+      <div class="header" style="text-align:left;padding:5px;" if:true={filesDetails}>
         <div style="text-align:center">
           Configure Image Hotspots
          </div>
@@ -178,18 +176,31 @@
      App URL
     </div>
  
-    <div  class="applink" style="width:50%;margin:0 auto;margin-top:150px">
+    <div  class="applink" style="width:50%;margin:0 auto;margin-top:70px">
+      <lightning-button  variant="brand"  label="Back Home" title="Navigate to Configuration Home" icon-name="utility:home" class="slds-m-left_x-small" onclick={backHome}></lightning-button>
+<div style="margin-top:20px;">
       <lightning-textarea name="input1" label="" value=  {finalAppUrl} disabled ></lightning-textarea>
-     </div>
+    </div>
+    </div>
      <div style="margin-top:20px;">
      <a href={finalAppUrl} target="_blank">    <!--https://orgchartsdo31796.lightning.force.com/c/ProtoTypeBuilderConfig.app?templateId={configId}-->
       <lightning-button  variant="brand-outline"  label="Launch Application" title="Navigate to Application Home" icon-name="utility:home" class="slds-m-left_x-small"></lightning-button>
     </a>
 
     <lightning-button  variant="brand-outline"  label="Copy URL to Clipboard" title="Copy URL to Clipboard" icon-name="utility:copy_to_clipboard" class="slds-m-left_x-small" onclick={handleCopyToClipboard}></lightning-button>
-    <lightning-button  variant="brand-outline"   label="Share URL" title="Share URL" icon-name="utility:internal_share" class="slds-m-left_x-small"></lightning-button>
+    <lightning-button  variant="brand-outline"   label="Share URL" title="Share URL" icon-name="utility:internal_share" class="slds-m-left_x-small" onclick={handleShareClick}></lightning-button>
 
   </div>
+  <template if:true={isShare}>
+  <div style="width:50%;margin:0 auto;margin-top:20px;text-align:left;">
+    <lightning-textarea name="emailAddress" label="Email" onchange={handleEmailChange} placeholder="Enter Email Ids seperated by comma(,)"   ></lightning-textarea>
+
+  </div>
+  <div>
+    <lightning-button  variant="brand"   label="Send Email" title="Send Email"  class="slds-m-left_x-small" onclick={sendEmailHandler}></lightning-button>
+
+  </div>
+</template>
     </div>
   </div>
 

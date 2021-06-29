@@ -1,6 +1,7 @@
 import { LightningElement, track, api } from "lwc";
 import TRAILHEAD_LOGO from "@salesforce/resourceUrl/image";
 import My_Resource from "@salesforce/resourceUrl/PrototypeAssets";
+import sendEmail from "@salesforce/apex/PrototypeController.sendEmail";
 import createProtoConfig from "@salesforce/apex/PrototypeController.createPrototypeConfig";
 import getFiles from "@salesforce/apex/PrototypeController.getRelatedFiles";
 import createScreenConfig from "@salesforce/apex/PrototypeController.createScreenConfig";
@@ -8,6 +9,7 @@ import getHotspots from "@salesforce/apex/PrototypeController.getScreenHotspots"
 import deleteHotspots from "@salesforce/apex/PrototypeController.deleteHotspots";
 import updateHomeScreen from "@salesforce/apex/PrototypeController.updateHomeScreen";
 import checkHomeScreen from "@salesforce/apex/PrototypeController.checkHomeScreen";
+import {ShowToastEvent} from 'lightning/platformShowToastEvent';
 
 export default class DrawImage extends LightningElement {
   @api recordId;
@@ -16,6 +18,8 @@ export default class DrawImage extends LightningElement {
   ipad = My_Resource + "/ipad.png";
   staticImage = TRAILHEAD_LOGO;
   trailheadLogoUrl = TRAILHEAD_LOGO;
+  emailIds;
+  isShare=false;
   imageName = 'noLogo';
   show2 = true;
   currentStep;
@@ -302,6 +306,34 @@ export default class DrawImage extends LightningElement {
     selection.addRange(range);      
     const successful = document.execCommand('copy');
   }
+
+  handleShareClick(){
+    this.isShare = true;
+  }
+  handleEmailChange(event) {
+    if (event.target.name === 'emailAddress') {
+        this.emailIds = event.target.value;
+    }
+}
+
+backHome(){
+  window.location.reload();
+}
+sendEmailHandler(event) {
+  // send mail
+  console.log("Sending email to", this.emailIds);
+  let email = this.emailIds.indexOf(',')!==-1?this.emailIds.split(','):this.emailIds;
+  sendEmail({ toAddress: email, subject: this.protoName+" App URL", body: this.finalAppUrl}).then((response) => {
+    this.isShare = false;
+    this.dispatchEvent(
+      new ShowToastEvent({
+          title: 'Success',
+          message: 'App URL shared with the recepients.' ,
+          variant: 'success',
+      }),
+  );
+  });;
+}
 
   get checkStep1(){
 

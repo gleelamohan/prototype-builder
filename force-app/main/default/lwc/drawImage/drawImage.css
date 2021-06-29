@@ -7,7 +7,7 @@
 .sub-cointainer{
   margin: 10px;
   min-height: 600px;
-  border: 1px solid black;
+  border: 1px solid rgb(221, 219, 218);
   border-radius: 10px;
 }
 
@@ -15,7 +15,7 @@
   width: 100%;
   text-align: center;
   padding: 30px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid rgb(221, 219, 218);
   margin: 0 auto;
   font-size:18px;
 }
@@ -23,27 +23,27 @@
 .section-input{
 
   padding: 20px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid rgb(221, 219, 218);
   width:95%;
   margin:auto;
 }
 
 .section-input-upload{
   padding: 40px;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid rgb(221, 219, 218);
   width:95%;
   margin:auto;
 }
 
 .section-type{
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid rgb(221, 219, 218);
   width:95%;
   margin:auto;
   padding:40px 20px 40px 20px;
 }
 
 .frame-section{
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid rgb(221, 219, 218);
   width:95%;
   margin:auto;
   padding:20px 20px 20px 20px;
