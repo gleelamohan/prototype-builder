@@ -1,21 +1,10 @@
 <template>
 
-   <!--<body>
-      <img src ={mysample} alt = "usemap" usemap = "#lessons"/>
-      <map name = "lessons">
-         
-         <A href="www.google.com">Clothes</A>
-         <area shape = "rect" coords = "440,57,37,180" alt = "HTML Tutorial"
-            href = "#" target = "_blank" onclick={handleClick}/>
-         
-           
-
-      </map>
-   </body>-->
-   
-     
-
    <div class="parentDiv">
+    <template if:true={showSpinner}>
+      <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+
+  </template>
           <template if:true={imageHotspots} for:each={imageHotspots} for:item="dat">
         <div  key={dat.contentVersionId} class="xyz hideIt" title={dat.prototypeScreenConfig.startFlag__c} id={dat.contentVersionId} >
           <div  class="screenshot" >
@@ -26,17 +15,21 @@
         class="logo-lg"
         id={dat.contentVersionId}
         draggable=“false”
+        onload={handleLoad}
       />
+
+      
       </div>
       
-    
+     
     
     <svg
     
-        viewBox="0 0 1920 1080"
+        viewBox={dat.viewBox}
         class="draw"
         xmlns="http://www.w3.org/2000/svg"
         key={dat.contentVersionId}
+        id={dat.contentVersionId}
       >
 
       

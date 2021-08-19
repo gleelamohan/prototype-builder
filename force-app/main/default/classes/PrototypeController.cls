@@ -4,10 +4,18 @@ public with sharing class PrototypeController {
     }
 
     @AuraEnabled
-    public static void updateHomeScreen(String prevId, string currId){
+    public static void updateHomeScreen(String prevId, string currId, string cId){
        
-        List<Prototype_Screen_Configuration__c> pscSelect = [select Id,startFlag__c	 from Prototype_Screen_Configuration__c where Id=:currId];
+        List<Prototype_Screen_Configuration__c> pscSelect = [select Id,startFlag__c	 from Prototype_Screen_Configuration__c where Prototype_Configuration__c=:cId];
 
+        for(Prototype_Screen_Configuration__c psc : pscSelect){
+            if(psc.Id == currId){
+                psc.startFlag__c	= true;
+            }else {
+                psc.startFlag__c	= false;
+            }
+        }
+/*
         if(!pscSelect.isEmpty()){
             if(!pscSelect[0].startFlag__c)
             {
@@ -27,8 +35,8 @@ public with sharing class PrototypeController {
         if(!pscUnselect.isEmpty()){
             pscUnselect[0].startFlag__c	= false;
             update pscUnselect;
-        }
-    
+        }*/
+        update pscSelect;
 
     }
 
@@ -73,6 +81,17 @@ public with sharing class PrototypeController {
   }
 
   @AuraEnabled
+  public static void addScreenHeight(string screenId, integer height) {
+
+    Prototype_Screen_Configuration__c psc=  [select sheight__c from Prototype_Screen_Configuration__c where Id=:screenId];
+System.Debug(string.isBlank(String.valueOf(psc.sheight__c)));
+   if(string.isBlank(String.valueOf(psc.sheight__c))){
+    psc.sheight__c = height;
+    update psc;
+   }
+  }
+
+  @AuraEnabled
   public static string createScreenConfig(string cId, string cvId, string fName, boolean startFlag) {
 
 
@@ -94,6 +113,7 @@ public with sharing class PrototypeController {
     return screenConfigId;
 
   }
+  
 
     @AuraEnabled
   public static string createPrototypeConfig(string name, string type, string orientation, Boolean withFrame) {
@@ -111,9 +131,9 @@ public with sharing class PrototypeController {
 }
 
     @AuraEnabled
-    public static Boolean checkHomeScreen(string screenId){
-        List<Prototype_Screen_Configuration__c> psc = [select  startFlag__c from Prototype_Screen_Configuration__c where Id=:screenId];
-        return psc[0].startFlag__c == true?true:false;
+    public static Prototype_Screen_Configuration__c checkHomeScreen(string screenId){
+        Prototype_Screen_Configuration__c psc = [select  Id, startFlag__c from Prototype_Screen_Configuration__c where Id=:screenId];
+        return psc;
     }
 
     @AuraEnabled

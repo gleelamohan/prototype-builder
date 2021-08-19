@@ -60,3 +60,18 @@
 .parentDiv {
   min-height: 100%;/* width: 1655px; background-color: rgb(195, 195, 195);*/ position: relative; 
 }
+
+.loader {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 65;
+  
+  margin: -76px 0 0 -76px;
+  
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}

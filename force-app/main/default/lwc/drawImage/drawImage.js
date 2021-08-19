@@ -72,7 +72,8 @@ export default class DrawImage extends LightningElement {
     checkHomeScreen({
       screenId:this.configScreenId
     }).then((response) => {  
-      if(response){
+      if(response.startFlag__c){
+        this.prevHomeScreenId = response.Id;
         console.log(response);
         this.isHome = true;
         const checkbox = this.template.querySelector('.homepage');
@@ -220,7 +221,8 @@ export default class DrawImage extends LightningElement {
   handleHomeChange(event){
     updateHomeScreen({
       prevId: this.prevHomeScreenId,
-      currId: this.configScreenId
+      currId: this.configScreenId,
+      cId: this.configId
     }).then((response) => {
       const checkbox = this.template.querySelector('.homepage');
       checkbox.disabled = true;

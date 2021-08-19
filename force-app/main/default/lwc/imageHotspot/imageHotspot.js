@@ -1,6 +1,7 @@
 import { LightningElement, track, api } from "lwc";
 import createScreenHotspot from "@salesforce/apex/PrototypeController.createScreenHotspot";
 import getHotspots from "@salesforce/apex/PrototypeController.getScreenHotspots";
+import addScreenHeight from "@salesforce/apex/PrototypeController.addScreenHeight";
 
 
 export default class ImageHotspot extends LightningElement {
@@ -50,7 +51,6 @@ export default class ImageHotspot extends LightningElement {
     if (this.hasRendered){
     this.$(".modalpopup").classList.add("hide_modal");
     }
-
     if(this.versionId){
       this.template.querySelectorAll(".logo-img").forEach(
         (element) => {
@@ -66,6 +66,11 @@ export default class ImageHotspot extends LightningElement {
         this.$('.draw').setAttribute('viewBox', '0 0 1920 '+ svgHeight);
         this.$('.draw').setAttribute('height',  svgHeight);
         this.$('.draw').setAttribute('width',  '1920');
+
+        if(this.screenId){
+        addScreenHeight({ screenId: this.screenId,height:svgHeight});
+        }
+
       }
     }
     
